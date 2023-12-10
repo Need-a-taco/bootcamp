@@ -1,6 +1,6 @@
 import React from 'react';
 import { Link, withRouter,  } from 'react-router-dom';
-import "./CardViewer.css";
+import './CardViewer.css'; 
 import { firebaseConnect, isLoaded, isEmpty } from 'react-redux-firebase';
 import { connect } from 'react-redux';
 import { compose } from 'redux';
@@ -25,25 +25,21 @@ class CardViewer extends React.Component {
     }
     const card = this.props.cards[this.state.currIndex][this.state.isFront ? 'front' : 'back']
     return (
-      <div>
-        <h2>Card Viewer</h2> 
-        <table>
-            <h2>
-                {card}
-            </h2> 
-        </table>      
-        <button onClick={() => this.setState(prevState => ({ isFront: !prevState.isFront }))}>
-            flip
-        </button>
-        <button onClick={() => this.setState(prevState => ({ currIndex: Math.max(prevState.currIndex - 1, 0) , isFront : true}))}>
-         Previous
-        </button>               
-        <button onClick={() => this.setState(prevState => ({ currIndex: Math.min(this.props.cards.length - 1, prevState.currIndex + 1),  isFront : true }))}>
-         next
-        </button>
-        <h2>{this.state.currIndex+1} / {this.props.cards.length} </h2>
-
-        <Link to="/">Home</Link>
+      <div className="container">
+        <h2>Card Viewer</h2>
+        <div className="card" onClick={() => this.setState(prevState => ({ isFront: !prevState.isFront }))}>
+          {card}
+        </div>
+        <div className="button-container">
+          <button onClick={() => this.setState(prevState => ({ currIndex: Math.max(prevState.currIndex - 1, 0), isFront: true }))}>
+            Previous
+          </button>
+          <button onClick={() => this.setState(prevState => ({ currIndex: Math.min(this.props.cards.length - 1, prevState.currIndex + 1), isFront: true }))}>
+            Next
+          </button>
+        </div>
+        <h2>{this.state.currIndex + 1} / {this.props.cards.length}</h2>
+        <Link to="/" className="link">Home</Link>
       </div>
     );
   }

@@ -1,14 +1,71 @@
-table,
-td,
-th {
-  border: 1px solid black;
+/* CardEditor Styles */
+.CardEditor {
+  text-align: center;
+  padding: 20px;
 }
 
-table {
-  border-collapse: collapse;
+/* Heading Styles */
+.CardEditor h2 {
+  font-size: 2em;
+  color: #333;
 }
 
-td,
-th {
+/* Input Styles */
+.CardEditor input {
+  margin: 5px;
   padding: 10px;
+  width: 100%;
+  box-sizing: border-box;
+}
+
+/* Table Styles */
+.CardEditor table {
+  width: 100%;
+  border-collapse: collapse;
+  margin: 20px 0;
+}
+
+.CardEditor th, .CardEditor td {
+  padding: 10px;
+  border: 1px solid #ccc;
+}
+
+/* Button Styles */
+.CardEditor button {
+  margin: 10px;
+  padding: 10px 20px;
+  font-size: 1em;
+  text-align: center;
+  text-decoration: none;
+  color: #fff;
+  background-color: #007bff;
+  border: none;
+  border-radius: 5px;
+  cursor: pointer;
+  transition: background-color 0.3s ease;
+}
+
+.CardEditor button:disabled {
+  background-color: #ccc;
+  cursor: not-allowed;
+}
+
+.CardEditor button:hover {
+  background-color: #0056b3;
+}
+
+/* Link Styles */
+.CardEditor a {
+  display: inline-block;
+  margin: 10px;
+  padding: 10px 20px;
+  text-decoration: none;
+  color: #333;
+  border: 1px solid #ccc;
+  border-radius: 5px;
+  transition: background-color 0.3s ease;
+}
+
+.CardEditor a:hover {
+  background-color: #f2f2f2;
 }

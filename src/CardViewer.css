@@ -1,11 +1,63 @@
+
 .card {
   border: 1px solid black;
   width: fit-content;
   min-width: 200px;
   text-align: center;
   padding: 50px;
+  margin: 20px auto;
 }
 
 .card:hover {
   cursor: pointer;
+}
+
+.button-container {
+  display: flex;
+  justify-content: space-between;
+  margin-top: 20px;
+}
+
+button {
+  padding: 10px;
+  background-color: #4caf50;
+  color: white;
+  border: none;
+  cursor: pointer;
+}
+
+button:hover {
+  background-color: #45a049;
+}
+
+.link {
+  display: block;
+  margin-top: 20px;
+  text-decoration: none;
+  background-color: #2196f3;
+  color: white;
+  padding: 10px;
+  text-align: center;
+}
+
+.link:hover {
+  background-color: #0b7dda;
+}
+body {
+  font-family: 'Arial', sans-serif;
+}
+
+/* Adjust font size */
+h1 {
+  font-size: 2em;
+}
+
+/* Set font weight */
+.bold-text {
+  font-weight: bold;
+}
+
+/* Align text */
+.center-text {
+  text-align: center;
 }
