@@ -1,7 +1,4 @@
 import React from 'react';
-import { Link, } from 'react-router-dom';
-import { firebaseConnect } from 'react-redux-firebase';
-
 
 class CardViewer extends React.Component {
     constructor(props) {
@@ -11,7 +8,7 @@ class CardViewer extends React.Component {
         isFront: true
         };
       }
-   
+
   render() {
     const card = this.props.cards[this.state.currIndex][this.state.isFront ? 'front' : 'back']
     return (
@@ -31,11 +28,11 @@ class CardViewer extends React.Component {
         <button onClick={() => this.setState(prevState => ({ currIndex: Math.min(this.props.cards.length - 1, prevState.currIndex + 1),  isFront : true }))}>
          next
         </button>
+        <button onClick={this.props.switchMode}>Go to card editor</button>
         <h2>{this.state.currIndex+1} / {this.props.cards.length} </h2>
-
-        <Link to="/editor">Go to card viewer</Link>
       </div>
     );
   }
 }
-export default firebaseConnect(['/bootcamp/flashcards/deck1'])(CardViewer);
+
+export default CardViewer;
