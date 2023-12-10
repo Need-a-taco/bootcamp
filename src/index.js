@@ -1,61 +1,50 @@
 import React from 'react';
 import ReactDOM from 'react-dom';
 import App from './App';
-
-import { BrowserRouter } from 'react-router-dom';
-
-import { Provider } from 'react-redux';
-import firebase from 'firebase/app';
+import { BrowserRouter} from 'react-router-dom';
+import firebase from 'firebase/compat/app';
+import { Provider } from "react-redux";
 import 'firebase/database';
-import 'firebase/auth';
-import 'firebase/functions';
-import { createStore, combineReducers } from 'redux';
-import {
-  ReactReduxFirebaseProvider,
-  firebaseReducer,
-} from 'react-redux-firebase';
-import { composeWithDevTools } from 'redux-devtools-extension';
+import {createStore, combineReducers, } from 'redux';
+import { ReactReduxFirebaseProvider, firebaseReducer} from 'react-redux-firebase';
+import {composeWithDevTools} from "redux-devtools-extension";
 
 const firebaseConfig = {
-  apiKey: 'AIzaSyAC0qaud5YwkNZV7ADHcwf9rpoGH5TPqEs',
-  authDomain: 'bootcamp-ce748.firebaseapp.com',
-  databaseURL: 'https://bootcamp-ce748.firebaseio.com',
-  projectId: 'bootcamp-ce748',
-  storageBucket: 'bootcamp-ce748.appspot.com',
-  messagingSenderId: '782124421793',
-  appId: '1:782124421793:web:b26b23317989a449dad6e0',
-};
+    apiKey: "AIzaSyBhMN9a9AY1NN6FTNAJTn-_3RF30lPxPU0",
+    authDomain: "bootcamp-9ccf6.firebaseapp.com",
+    databaseURL: "https://bootcamp-9ccf6-default-rtdb.firebaseio.com",
+    projectId: "bootcamp-9ccf6",
+    storageBucket: "bootcamp-9ccf6.appspot.com",
+    messagingSenderId: "680012162000",
+    appId: "1:680012162000:web:3162f681824f45d019cfd5",
+    measurementId: "G-62Y0R4GX6F"
+  };
 
 firebase.initializeApp(firebaseConfig);
-// firebase.functions().useFunctionsEmulator('http://localhost:5001');
 
-// Add firebase to reducers
 const rootReducer = combineReducers({
-  firebase: firebaseReducer,
+    firebase: firebaseReducer,
 });
 
-// Create store with reducers and initial state
 const store = createStore(rootReducer, composeWithDevTools());
 
-// react-redux-firebase config
 const rrfConfig = {
-  preserveOnLogout: ['homepage'],
-  userProfile: 'users',
-};
-
+    userProfile: 'users',
+}
 const rrfProps = {
-  firebase,
-  config: rrfConfig,
-  dispatch: store.dispatch,
-};
+    firebase,
+    config: rrfConfig,
+    dispatch: store.dispatch
+    // createFirestoreInstance // <- needed if using firestore
+  }
 
-ReactDOM.render(
-  <Provider store={store}>
-    <ReactReduxFirebaseProvider {...rrfProps}>
-      <BrowserRouter>
-        <App />
-      </BrowserRouter>
-    </ReactReduxFirebaseProvider>
-  </Provider>,
-  document.getElementById('root'),
-);
+ ReactDOM.render(
+    <Provider store= { store }> 
+        <ReactReduxFirebaseProvider {... rrfProps} >
+            <BrowserRouter>
+                <App/>
+            </BrowserRouter>
+         </ReactReduxFirebaseProvider>,
+    </Provider>,
+    document.getElementById('root')
+ );

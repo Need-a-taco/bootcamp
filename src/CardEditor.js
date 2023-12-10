@@ -1,98 +1,38 @@
 import React from 'react';
 import './CardEditor.css';
-
-import { Link, withRouter, Redirect } from 'react-router-dom';
-import { firebaseConnect } from 'react-redux-firebase';
-import { compose } from 'redux';
-import { connect } from 'react-redux';
+import { Link } from 'react-router-dom';
 
 class CardEditor extends React.Component {
   constructor(props) {
     super(props);
-    this.state = {
-      cards: [
-        { front: 'front1', back: 'back1' },
-        { front: 'front2', back: 'back2' },
-      ],
-      front: '',
-      back: '',
-      name: '',
-      private: false,
-    };
+    this.state = { front: '', back: ''};
   }
 
   addCard = () => {
-    if (!this.state.front.trim() || !this.state.back.trim()) {
-      alert('Cannot add empty card');
-      return;
-    }
-
-    const newCard = { front: this.state.front, back: this.state.back };
-    const cards = this.state.cards.slice().concat(newCard);
-    this.setState({ cards, front: '', back: '' });
+    this.props.addCard(this.state);
+    this.setState({ front: '', back: '' });
   };
 
-  deleteCard = index => {
-    const cards = this.state.cards.slice();
-    cards.splice(index, 1);
-    this.setState({ cards });
-  };
+  deleteCard = index => this.props.deleteCard(index);
 
   handleChange = event =>
     this.setState({ [event.target.name]: event.target.value });
 
-  handleCheckboxChange = event =>
-    this.setState({ [event.target.name]: event.target.checked });
-
-  createDeck = () => {
-    const deckId = this.props.firebase.push('/flashcards').key;
-    const updates = {};
-    const newDeck = {
-      cards: this.state.cards,
-      name: this.state.name,
-      owner: this.props.isLoggedIn,
-      visibility: this.state.private ? 'private' : 'public',
-    };
-    updates[`/flashcards/${deckId}`] = newDeck;
-    updates[`/homepage/${deckId}`] = {
-      name: this.state.name,
-      owner: this.props.isLoggedIn,
-      visibility: this.state.private ? 'private' : 'public',
-    };
-    const onComplete = () => this.props.history.push(`/viewer/${deckId}`);
-    this.props.firebase.update('/', updates, onComplete);
-  };
-
   render() {
-    if (!this.props.isLoggedIn) {
-      return <Redirect to="/register" />;
-    }
-
-    const cards = this.state.cards.map((card, index) => {
-      return (
-        <tr key={index}>
-          <td>{card.front}</td>
-          <td>{card.back}</td>
-          <td>
-            <button onClick={() => this.deleteCard(index)}>Delete card</button>
-          </td>
-        </tr>
-      );
-    });
+    console.log(this.props.cards)
+    const cards = this.props.cards.map((card, index) => (
+      <tr key={index}>
+        <td>{this.state.isFront ? card.front : card.back}</td>
+        <td>{card.back}</td>
+        <td>
+          <button onClick={() => this.deleteCard(index)}>Delete card</button>
+        </td>
+      </tr>
+    ));
 
     return (
       <div>
         <h2>Card Editor</h2>
-        <div>
-          Deck name:{' '}
-          <input
-            name="name"
-            onChange={this.handleChange}
-            placeholder="Name of deck"
-            value={this.state.name}
-          />
-        </div>
-        <br />
         <table>
           <thead>
             <tr>
@@ -118,37 +58,13 @@ class CardEditor extends React.Component {
         />
         <button onClick={this.addCard}>Add card</button>
         <hr />
-        <div>
-          Make this deck private{' '}
-          <input
-            name="private"
-            onChange={this.handleCheckboxChange}
-            type="checkbox"
-            value={this.state.private}
-          />
-        </div>
-        <br />
-        <div>
-          <button
-            disabled={!this.state.name.trim() || this.state.cards.length === 0}
-            onClick={this.createDeck}
-          >
-            Create deck
-          </button>
-        </div>
-        <br />
-        <Link to="/">Home</Link>
+        <button onClick={() => this.setState(prevState => ({ isFront: !prevState.isFront }))}>
+          Flip Card
+        </button>
+        <Link to="/viewer">Go to card viewer</Link>
       </div>
     );
   }
 }
 
-const mapStateToProps = state => {
-  return { isLoggedIn: state.firebase.auth.uid };
-};
-
-export default compose(
-  firebaseConnect(),
-  connect(mapStateToProps),
-  withRouter,
-)(CardEditor);
+export default CardEditor;

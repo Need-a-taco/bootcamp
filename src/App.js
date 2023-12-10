@@ -1,45 +1,53 @@
 import React from 'react';
 import CardEditor from './CardEditor';
 import CardViewer from './CardViewer';
-import Homepage from './Homepage';
-import PageRegister from './PageRegister';
-import PageLogin from './PageLogin';
+import { Route, Routes } from 'react-router-dom';
+import HomePage from './HomePage';
 
-import { Switch, Route } from 'react-router-dom';
-import { connect } from 'react-redux';
-import { isLoaded } from 'react-redux-firebase';
-
-const App = props => {
-  if (!isLoaded(props.auth, props.profile)) {
-    return <div>Authentication loading...</div>;
+class App extends React.Component {
+  constructor(props) {
+    super(props);
+    this.state = {
+      cards: [
+        { front: 'front1', back: 'back1' },
+        { front: 'front2', back: 'back2' },
+      ],
+    };
   }
 
-  return (
-    <Switch>
-      <Route exact path="/">
-        <Homepage />
-      </Route>
-      <Route exact path="/editor">
-        <CardEditor />
-      </Route>
-      <Route exact path="/viewer/:deckId">
-        <CardViewer />
-      </Route>
-      <Route exact path="/register">
-        <PageRegister />
-      </Route>
-      <Route exact path="/login">
-        <PageLogin />
-      </Route>
-      <Route>
-        <div>Page not found!</div>
-      </Route>
-    </Switch>
-  );
-};
+  addCard = card => {
+    const cards = this.state.cards.slice().concat(card);
+    this.setState({ cards });
+  };
 
-const mapStateToProps = state => {
-  return { auth: state.firebase.auth, profile: state.firebase.profile };
-};
+  deleteCard = index => {
+    const cards = this.state.cards.slice();
+    cards.splice(index, 1);
+    this.setState({ cards });
+  };
 
-export default connect(mapStateToProps)(App);
+  render() {
+    return (
+      <Routes>
+        <Route exact path="/" 
+         element={<HomePage />}
+         />
+
+        <Route exact path="/editor"
+          element= {<CardEditor
+          addCard={this.addCard}
+          cards={this.state.cards}
+          deleteCard={this.deleteCard}
+          />}
+         />
+
+        <Route exact path="/viewer"
+          element= {<CardViewer
+          cards={this.state.cards}          
+        />}/>
+      </Routes>
+    );
+  }
+}
+
+export default App;

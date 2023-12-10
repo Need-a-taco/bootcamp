@@ -1,103 +1,41 @@
 import React from 'react';
-import './CardViewer.css';
+import { Link, } from 'react-router-dom';
+import { firebaseConnect } from 'react-redux-firebase';
 
-import { Link, withRouter } from 'react-router-dom';
-import {
-  firebaseConnect,
-  isLoaded,
-  isEmpty,
-  populate,
-} from 'react-redux-firebase';
-import { connect } from 'react-redux';
-import { compose } from 'redux';
 
 class CardViewer extends React.Component {
-  constructor(props) {
-    super(props);
-    this.state = {
-      currentIndex: 0,
-      displayFront: true,
-    };
-  }
-
-  nextCard = () => {
-    if (this.state.currentIndex < this.props.cards.length - 1) {
-      this.setState({
-        currentIndex: this.state.currentIndex + 1,
-        displayFront: true,
-      });
-    }
-  };
-
-  prevCard = () => {
-    if (this.state.currentIndex > 0) {
-      this.setState({
-        currentIndex: this.state.currentIndex - 1,
-        displayFront: true,
-      });
-    }
-  };
-
-  flipCard = () => this.setState({ displayFront: !this.state.displayFront });
-
+    constructor(props) {
+        super(props);
+        this.state = { front: '', back: '', 
+        currIndex : 0,
+        isFront: true
+        };
+      }
+   
   render() {
-    if (!isLoaded(this.props.cards)) {
-      return <div>Loading...</div>;
-    }
-
-    if (isEmpty(this.props.cards)) {
-      return <div>Page not found!</div>;
-    }
-
-    // this uses the ternary operator:
-    // https://developer.mozilla.org/en-US/docs/Web/JavaScript/Reference/Operators/Conditional_Operator
-    const card = this.props.cards[this.state.currentIndex][
-      this.state.displayFront ? 'front' : 'back'
-    ];
-
+    const card = this.props.cards[this.state.currIndex][this.state.isFront ? 'front' : 'back']
     return (
       <div>
-        <h2>{this.props.name}</h2>
-        <h4>Created by {this.props.username}</h4>
-        Card {this.state.currentIndex + 1} out of {this.props.cards.length}.
-        <div className="card" onClick={this.flipCard}>
-          {card}
-        </div>
-        <br />
-        <button
-          disabled={this.state.currentIndex === 0}
-          onClick={this.prevCard}
-        >
-          Prev card
+        <h2>Card Viewer</h2> 
+        <table>
+            <h2>
+                {card}
+            </h2> 
+        </table>      
+        <button onClick={() => this.setState(prevState => ({ isFront: !prevState.isFront }))}>
+            flip
         </button>
-        <button
-          disabled={this.state.currentIndex === this.props.cards.length - 1}
-          onClick={this.nextCard}
-        >
-          Next card
+        <button onClick={() => this.setState(prevState => ({ currIndex: Math.max(prevState.currIndex - 1, 0) , isFront : true}))}>
+         Previous
+        </button>               
+        <button onClick={() => this.setState(prevState => ({ currIndex: Math.min(this.props.cards.length - 1, prevState.currIndex + 1),  isFront : true }))}>
+         next
         </button>
-        <hr />
-        <Link to="/">Home</Link>
+        <h2>{this.state.currIndex+1} / {this.props.cards.length} </h2>
+
+        <Link to="/editor">Go to card viewer</Link>
       </div>
     );
   }
 }
-
-const populates = [{ child: 'owner', root: 'users' }];
-
-const mapStateToProps = (state, props) => {
-  const deck = populate(state.firebase, props.match.params.deckId, populates);
-  const name = deck && deck.name;
-  const cards = deck && deck.cards;
-  const username = deck && deck.owner && deck.owner.username;
-  return { cards: cards, name: name, username: username };
-};
-
-export default compose(
-  withRouter,
-  firebaseConnect(props => {
-    const deckId = props.match.params.deckId;
-    return [{ path: `/flashcards/${deckId}`, storeAs: deckId, populates }];
-  }),
-  connect(mapStateToProps),
-)(CardViewer);
+export default firebaseConnect(['/bootcamp/flashcards/deck1'])(CardViewer);
